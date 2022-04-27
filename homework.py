@@ -35,7 +35,7 @@ handler = logging.StreamHandler(stream='sys.stdout')
 
 
 def send_message(bot, message):
-    '''Отправляет сообщение в Telegram чат'''
+    """Отправляет сообщение в Telegram чат"""
     try:
         logger.info('Сообщение отправлено')
         bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=message)
@@ -46,7 +46,7 @@ def send_message(bot, message):
 
 
 def get_api_answer(current_timestamp):
-    '''Отправляет запрос к эндпоинту'''
+    """Отправляет запрос к эндпоинту"""
     timestamp = current_timestamp or int(time.time())
     params = {'from_date': timestamp}
     try:
@@ -64,7 +64,7 @@ def get_api_answer(current_timestamp):
 
 
 def check_response(response):
-    '''Проверяет корректность ответа API'''
+    """Проверяет корректность ответа API"""
     try:
         homework = response['homeworks']
     except KeyError:
@@ -83,7 +83,7 @@ def check_response(response):
 
 
 def parse_status(homework):
-    '''Извлекает конкретную информацию из запроса'''
+    """Извлекает конкретную информацию из запроса"""
     try:
         homework_name = homework['homework_name']
         homework_status = homework['status']
@@ -96,7 +96,7 @@ def parse_status(homework):
 
 
 def check_tokens():
-    '''Проверка токенов'''
+    """Проверка токенов"""
     if PRACTICUM_TOKEN and TELEGRAM_TOKEN and TELEGRAM_CHAT_ID:
         return True
     else:
@@ -104,7 +104,7 @@ def check_tokens():
 
 
 def main():
-    '''Основная логика работы бота.'''
+    """Основная логика работы бота"""
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     current_timestamp = int(time.time())
     while True:
