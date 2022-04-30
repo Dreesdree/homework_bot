@@ -26,7 +26,7 @@ HOMEWORK_STATUSES = {
 
 
 def init_logger() -> None:
-    """Настройки логгера"""
+    """Настройки логгера."""
     logging.basicConfig(
         level=logging.DEBUG,
         filename='main.log',
