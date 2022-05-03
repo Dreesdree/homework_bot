@@ -5,7 +5,7 @@ import logging
 import requests
 import exceptions
 
-from typing import Dict
+from typing import Dict, Union
 from http import HTTPStatus
 from dotenv import load_dotenv
 
@@ -26,7 +26,7 @@ HOMEWORK_STATUSES = {
 }
 
 
-def init_logger() -> object:
+def init_logger() -> logging.Logger:
     """Настройки логгера."""
     logging.basicConfig(
         level=logging.DEBUG,
@@ -42,7 +42,7 @@ def init_logger() -> object:
 logger = init_logger()
 
 
-def send_message(bot: None, message: str) -> None:
+def send_message(bot: telegram.Bot, message: str) -> None:
     """Отправляет сообщение в Telegram чат."""
     try:
         logger.info('Сообщение отправлено')
@@ -52,7 +52,8 @@ def send_message(bot: None, message: str) -> None:
         logging.error(message_error)
 
 
-def get_api_answer(current_timestamp: Dict[str, str]) -> dict:
+def get_api_answer(current_timestamp: Dict[str, str]) \
+        -> Dict[str, Union[str, int]]:
     """Отправляет запрос к эндпоинту."""
     timestamp = current_timestamp or int(time.time())
     params = {'from_date': timestamp}
@@ -75,7 +76,7 @@ def get_api_answer(current_timestamp: Dict[str, str]) -> dict:
         raise exceptions.GetAPIException(message_error)
 
 
-def check_response(response: Dict[str, str]) -> dict:
+def check_response(response: Dict[str, str]) -> Dict[str, str]:
     """Проверяет корректность ответа API."""
     try:
         homeworks = response['homeworks']
