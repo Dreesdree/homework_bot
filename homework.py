@@ -35,7 +35,7 @@ def init_logger() -> object:
     )
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
-    handler = logging.StreamHandler(stream='sys.stdout')
+    logging.StreamHandler(stream='sys.stdout')
     return logger
 
 
