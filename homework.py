@@ -5,6 +5,7 @@ import logging
 import requests
 import exceptions
 
+from typing import Dict
 from http import HTTPStatus
 from dotenv import load_dotenv
 
@@ -25,7 +26,7 @@ HOMEWORK_STATUSES = {
 }
 
 
-def init_logger() -> None:
+def init_logger() -> object:
     """Настройки логгера."""
     logging.basicConfig(
         level=logging.DEBUG,
@@ -34,14 +35,14 @@ def init_logger() -> None:
     )
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
+    handler = logging.StreamHandler(stream='sys.stdout')
     return logger
 
 
-handler = logging.StreamHandler(stream='sys.stdout')
 logger = init_logger()
 
 
-def send_message(bot, message) -> str:
+def send_message(bot: None, message: str) -> None:
     """Отправляет сообщение в Telegram чат."""
     try:
         logger.info('Сообщение отправлено')
@@ -51,7 +52,7 @@ def send_message(bot, message) -> str:
         logging.error(message_error)
 
 
-def get_api_answer(current_timestamp) -> dict:
+def get_api_answer(current_timestamp: Dict[str, str]) -> dict:
     """Отправляет запрос к эндпоинту."""
     timestamp = current_timestamp or int(time.time())
     params = {'from_date': timestamp}
@@ -68,32 +69,32 @@ def get_api_answer(current_timestamp) -> dict:
         raise exceptions.GetAPIException(message_error)
     try:
         return response.json()
-    except Exception:
+    except ValueError:
         message_error = 'Ответ не в формате json'
         logging.error(message_error)
         raise exceptions.GetAPIException(message_error)
 
 
-def check_response(response) -> dict:
+def check_response(response: Dict[str, str]) -> dict:
     """Проверяет корректность ответа API."""
     try:
-        homework = response['homeworks']
+        homeworks = response['homeworks']
     except KeyError:
         message_error = 'Отсутствие ожидаемых ключей'
         logging.error(message_error)
         raise KeyError(message_error)
-    if not isinstance(homework, list):
+    if not isinstance(homeworks, list):
         message_error = 'Неверный тип данных'
         logging.error(message_error)
         raise TypeError(message_error)
-    if not homework:
+    if not homeworks:
         message_error = 'Пустой список'
         logging.error(message_error)
         raise exceptions.CheckResponseException(message_error)
-    return homework
+    return homeworks
 
 
-def parse_status(homework) -> None:
+def parse_status(homework: Dict[str, str]) -> str:
     """Извлекает конкретную информацию из запроса."""
     try:
         homework_name = homework['homework_name']
